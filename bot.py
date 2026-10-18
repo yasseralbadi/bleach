@@ -1,6 +1,9 @@
 """AkatsukiAssistant - Discord clan bot for Bleach Mobile 3D (EU)."""
+import os
 import logging
 import sys
+from flask import Flask
+from threading import Thread
 
 import discord
 from discord import app_commands
@@ -8,6 +11,26 @@ from discord.ext import commands
 
 import config
 from database import Database
+
+# ----------------------------------------------------
+# [خادم ويب وهمي مدمج لتخطي فحص المنافذ في Render مجاناً]
+# ----------------------------------------------------
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "✅ Akatsuki Assistant Web Service is Running!"
+
+def run_web():
+    # استخدام المنفذ 8080 المتوافق تماماً مع تحديثات الاستضافة الحالية
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+
+def keep_alive():
+    Thread(target=run_web).start()
+
+# تشغيل خادم الويب فوراً قبل إقلاع البوت
+keep_alive()
+# ----------------------------------------------------
 
 log = logging.getLogger("akatsuki")
 
