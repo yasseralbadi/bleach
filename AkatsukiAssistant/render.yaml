@@ -1,0 +1,23 @@
+# Discord bots keep an outbound connection to Discord, so this is a background
+# worker (no web port needed). The disk keeps the SQLite database (scores)
+# across deploys - disks require a paid Render plan.
+services:
+  - type: worker
+    name: akatsuki-assistant
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: ADMIN_USER_IDS
+        sync: false
+      - key: DATABASE_PATH
+        value: /data/akatsuki.db
+    disk:
+      name: akatsuki-data
+      mountPath: /data
+      sizeGB: 1
